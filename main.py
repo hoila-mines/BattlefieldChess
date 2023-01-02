@@ -3,40 +3,56 @@ import pygame
 import pygame.display
 import pygame.image
 
-SIZE = WIDTH, HEIGHT = 720, 720
-window = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
+WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 720, 720
+window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Battlefield Chess")
 FPS_LIMIT = 60
 BOARD_WIDTH, BOARD_HEIGHT = 22, 12
+WHITE_COLOR = (255, 255, 255)
+BLACK_COLOR = (0, 0, 0)
+board = [[]]
+
+piece_config = [
+    ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK",
+     "bB", "bN", "bR"],
+    ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP",
+     "bP", "bP", "bP"],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP",
+     "wP", "wP", "wP"],
+    ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR", "wN", "wB", "wQ", "wK",
+     "wB", "wN", "wR"]
+]
+
+# def read_board():
 
 
-def calculate_cell_size():
-    if window.get_size()[0] < window.get_size()[1]:
-        return window.get_size()[0]/BOARD_WIDTH
+def alternate_color(color):  # swap the color from black to white, or vise versa
+    if color == BLACK_COLOR:
+        return WHITE_COLOR
     else:
-        return window.get_size()[1]/BOARD_WIDTH
+        return BLACK_COLOR
 
-def calculate_offset():
-    board_pixel_width = BOARD_WIDTH * calculate_cell_size()
-    board_pixel_height = BOARD_HEIGHT * calculate_cell_size()
-    xOffset = window.get_size()/2
-    yOffset = window.get
+
 def draw_board():
-    cell_size = calculate_cell_size()
-    color = (0, 0, 0)
+    cell_size = WINDOW_WIDTH / BOARD_WIDTH
+    color = WHITE_COLOR
+    y_offset = (WINDOW_HEIGHT - cell_size * BOARD_HEIGHT) // 2
     for i in range(BOARD_HEIGHT):
-        if color == (0, 0, 0):
-            color = (255, 255, 255)
-        else:
-            color = (0, 0, 0)
+        color = alternate_color(color)
         for j in range(BOARD_WIDTH):
-            if color == (0, 0, 0):
-                color = (255, 255, 255)
-            else:
-                color = (0, 0, 0)
-            cell = pygame.Rect(j*cell_size, i*cell_size, cell_size, cell_size)
+            color = alternate_color(color)
+            cell = pygame.Rect(j * cell_size, i * cell_size + y_offset, cell_size, cell_size)
             pygame.draw.rect(window, color, cell)
     pygame.display.update()
+
 
 
 def main():
@@ -50,6 +66,7 @@ def main():
                 is_running = False
         draw_board()
     pygame.quit()
+
 
 if __name__ == "__main__":
     main();
