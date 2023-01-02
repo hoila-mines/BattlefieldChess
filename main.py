@@ -12,7 +12,7 @@ WHITE_COLOR = (255, 255, 255)
 BLACK_COLOR = (0, 0, 0)
 board = [[]]
 
-piece_config = [
+board_config = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK",
      "bB", "bN", "bR"],
     ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP",
@@ -31,7 +31,14 @@ piece_config = [
      "wB", "wN", "wR"]
 ]
 
-# def read_board():
+def read_config():
+    for row in board_config:
+        if len(row) == 0:
+            continue
+        else:
+            for cell in row:
+                piece_color = cell[0]
+                piece_type = cell[1]
 
 
 def alternate_color(color):  # swap the color from black to white, or vise versa
