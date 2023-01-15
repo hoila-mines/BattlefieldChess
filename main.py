@@ -31,6 +31,7 @@ white_player = Player()
 black_player = Player()
 board = [[None for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
 highlighted_piece = None
+sprite_cache = {}
 
 board_config = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK",
@@ -113,9 +114,13 @@ def draw_board(): #draw the squares in alternating color
 
 def draw_player_pieces(player): #draw a player's pieces
     for piece in player.pieces:
-        piece_sprite = pygame.image.load(piece.spriteLoc) #load sprite
-        sprite_scalar = SQUARE_SIZE / max(piece_sprite.get_width(), piece_sprite.get_height()) #get scalar to maintain aspect ratio
-        piece_image = pygame.transform.smoothscale(piece_sprite, (piece_sprite.get_width() * sprite_scalar, piece_sprite.get_height() * sprite_scalar))
+        if piece.spriteLoc in sprite_cache: # load sprite from cache
+            piece_image = sprite_cache[piece.spriteLoc]
+        else:
+            piece_sprite = pygame.image.load(piece.spriteLoc) #load sprite
+            sprite_scalar = SQUARE_SIZE / max(piece_sprite.get_width(), piece_sprite.get_height()) #get scalar to maintain aspect ratio
+            piece_image = pygame.transform.smoothscale(piece_sprite, (piece_sprite.get_width() * sprite_scalar, piece_sprite.get_height() * sprite_scalar))
+            sprite_cache[piece.spriteLoc] = piece_image # add created sprite to cache
         window.blit(piece_image, (piece.locX * SQUARE_SIZE, piece.locY * SQUARE_SIZE + Y_OFFSET))
 
 
@@ -126,13 +131,23 @@ def draw(): #combines all draw functions
     draw_player_pieces(black_player)
     pygame.display.update()
 
+def clear_highlights():
+    for piece in white_player.pieces:
+        piece.remove_highlight()
+    for piece in black_player.pieces:
+        piece.remove_highlight()
+
 def handle_click(click_position): # ran every time there is a click
     square_x = math.floor(click_position[0] / SQUARE_SIZE) # convert event coordinates to board squares
     square_y = math.floor((click_position[1] - Y_OFFSET) / SQUARE_SIZE)
-    piece = board[square_y][square_x]
-    piece.is_highlighted = True
-    board[square_y][square_x] = piece
-    print("clicked")
+    if Y_OFFSET < click_position[1] < (Y_OFFSET + BOARD_HEIGHT * SQUARE_SIZE): # if the click was on the board
+        clicked_piece = board[square_y][square_x]  # get the piece at the clicked location
+        if clicked_piece is None:  # if the player clicked an empty square
+            clear_highlights()
+        else:
+            if not clicked_piece.is_highlighted:
+                clear_highlights()
+                clicked_piece.add_highlight()  # swap highlight to new clicked piece
     draw()
 
 

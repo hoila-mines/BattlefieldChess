@@ -12,3 +12,7 @@ class Piece:
     def set_loc(self, locX, locY):
         self.locX = locX
         self.locY = locY
+    def add_highlight(self):
+        self.is_highlighted = True
+    def remove_highlight(self):
+        self.is_highlighted = False
