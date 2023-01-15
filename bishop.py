@@ -1,5 +1,5 @@
-from peice import Piece
-from peice_color import PieceColor
+from piece import Piece
+from piece_color import PieceColor
 
 
 class Bishop(Piece):
@@ -9,5 +9,5 @@ class Bishop(Piece):
             self.spriteLoc = "Assets/bB.svg"
         elif color == PieceColor.WHITE:
             self.spriteLoc = "Assets/wB.svg"
-    def calculate_squares(self):
+    def check_squares(self, board):
         pass

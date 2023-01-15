@@ -1,5 +1,7 @@
-from peice import Piece
-from peice_color import PieceColor
+from direction import Direction
+from move_type import MoveType
+from piece import Piece
+from piece_color import PieceColor
 
 
 class Pawn(Piece):
@@ -9,5 +11,8 @@ class Pawn(Piece):
             self.spriteLoc = "Assets/bP.svg"
         elif color == PieceColor.WHITE:
             self.spriteLoc = "Assets/wP.svg"
-    def calculate_squares(self):
-        pass
+
+    def check_squares(self, board):
+        super().look_direction(board, Direction.UP, MoveType.OCCUPY)
+        super().look_direction(board, Direction.RIGHT_UP, MoveType.CAPTURE)
+        super().look_direction(board, Direction.LEFT_UP, MoveType.CAPTURE)

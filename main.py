@@ -9,7 +9,7 @@ from bishop import Bishop
 from king import King
 from knight import Knight
 from pawn import Pawn
-from peice_color import PieceColor
+from piece_color import PieceColor
 from player import Player
 from queen import Queen
 from rook import Rook
@@ -124,6 +124,13 @@ def draw_player_pieces(player): #draw a player's pieces
         window.blit(piece_image, (piece.locX * SQUARE_SIZE, piece.locY * SQUARE_SIZE + Y_OFFSET))
 
 
+        piece.check_squares(board)
+
+
+        if piece.is_highlighted: # designate available squares
+            for square in piece.available_squares:
+                pygame.draw.circle(window, (0, 0, 0), (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
+
 def draw(): #combines all draw functions
     window.fill((128, 128, 128))
     draw_board()
@@ -148,6 +155,8 @@ def handle_click(click_position): # ran every time there is a click
             if not clicked_piece.is_highlighted:
                 clear_highlights()
                 clicked_piece.add_highlight()  # swap highlight to new clicked piece
+    else:
+        clear_highlights()
     draw()
 
 
