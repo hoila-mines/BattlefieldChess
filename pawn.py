@@ -6,8 +6,8 @@ class Pawn(Piece):
     def __init__(self, locX, locY, color):
         super().__init__(locX, locY, color)
         if color == PieceColor.BLACK:
-            self.spriteLoc = "Assets/bP.png"
+            self.spriteLoc = "Assets/bP.svg"
         elif color == PieceColor.WHITE:
-            self.spriteLoc = "Assets/wP.png"
+            self.spriteLoc = "Assets/wP.svg"
     def calculate_squares(self):
         pass

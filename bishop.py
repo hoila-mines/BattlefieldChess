@@ -6,8 +6,8 @@ class Bishop(Piece):
     def __init__(self, locX, locY, color):
         super().__init__(locX, locY, color)
         if color == PieceColor.BLACK:
-            self.spriteLoc = "Assets/bB.png"
+            self.spriteLoc = "Assets/bB.svg"
         elif color == PieceColor.WHITE:
-            self.spriteLoc = "Assets/wB.png"
+            self.spriteLoc = "Assets/wB.svg"
     def calculate_squares(self):
         pass

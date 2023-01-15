@@ -12,15 +12,15 @@ from player import Player
 from queen import Queen
 from rook import Rook
 
-WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 720, 720
+WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 1078, 1078
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Battlefield Chess")
 FPS_LIMIT = 60
 BOARD_WIDTH, BOARD_HEIGHT = 22, 12
-CELL_SIZE = min(WINDOW_WIDTH, WINDOW_HEIGHT)/max(BOARD_WIDTH, BOARD_HEIGHT)
-Y_OFFSET = (WINDOW_HEIGHT - CELL_SIZE * BOARD_HEIGHT) // 2
+SQUARE_SIZE = min(WINDOW_WIDTH, WINDOW_HEIGHT) / max(BOARD_WIDTH, BOARD_HEIGHT)
+Y_OFFSET = (WINDOW_HEIGHT - SQUARE_SIZE * BOARD_HEIGHT) / 2
 WHITE_COLOR = (255, 255, 255)
-BLACK_COLOR = (0, 0, 0)
+RED_COLOR = (255, 128, 128)
 board = [[]]
 
 # initiate players
@@ -46,6 +46,7 @@ board_config = [
      "wB", "wN", "wR"]
 ]
 
+
 def read_config():
     for i in range(len(board_config)):
         if len(board_config[i]) == 0:
@@ -57,25 +58,25 @@ def read_config():
                 piece_color = None
                 newPiece = None
 
-                if piece_color_char == 'w': #get the piece color
+                if piece_color_char == 'w':  # get the piece color
                     piece_color = PieceColor.WHITE
                 elif piece_color_char == 'b':
                     piece_color = PieceColor.BLACK
 
-                match piece_type_char: #get the piece type and instantiate it
+                match piece_type_char:  # get the piece type and instantiate it
                     case 'R':
-                       newPiece = Rook(j, i, piece_color)
+                        newPiece = Rook(j, i, piece_color)
                     case 'N':
-                       newPiece = Knight(j, i, piece_color)
+                        newPiece = Knight(j, i, piece_color)
                     case 'B':
-                       newPiece = Bishop(j, i, piece_color)
+                        newPiece = Bishop(j, i, piece_color)
                     case 'K':
-                       newPiece = King(j, i, piece_color)
+                        newPiece = King(j, i, piece_color)
                     case 'Q':
-                       newPiece = Queen(j, i, piece_color)
+                        newPiece = Queen(j, i, piece_color)
                     case 'P':
-                       newPiece = Pawn(j, i, piece_color)
-                #add piece to correct player
+                        newPiece = Pawn(j, i, piece_color)
+                # add piece to correct player
                 if piece_color == PieceColor.WHITE:
                     white_player.add_piece(newPiece)
                 elif piece_color == PieceColor.BLACK:
@@ -83,10 +84,10 @@ def read_config():
 
 
 def alternate_color(color):  # swap the color from black to white, or vise versa
-    if color == BLACK_COLOR:
+    if color == RED_COLOR:
         return WHITE_COLOR
     else:
-        return BLACK_COLOR
+        return RED_COLOR
 
 
 def draw_board():
@@ -95,19 +96,24 @@ def draw_board():
         color = alternate_color(color)
         for j in range(BOARD_WIDTH):
             color = alternate_color(color)
-            cell = pygame.Rect(j * CELL_SIZE, i * CELL_SIZE + Y_OFFSET, CELL_SIZE, CELL_SIZE)
-            pygame.draw.rect(window, color, cell)
+            square = pygame.Rect(j * SQUARE_SIZE, i * SQUARE_SIZE + Y_OFFSET, SQUARE_SIZE, SQUARE_SIZE)
+            pygame.draw.rect(window, color, square)
+
+
+
+
+def draw_player_pieces(player):
+    for piece in player.pieces:
+        piece_sprite = pygame.image.load(piece.spriteLoc)
+        sprite_scalar = SQUARE_SIZE / max(piece_sprite.get_width(), piece_sprite.get_height())
+        piece_image = pygame.transform.smoothscale(piece_sprite, (piece_sprite.get_width() * sprite_scalar, piece_sprite.get_height() * sprite_scalar))
+        window.blit(piece_image, (piece.locX * SQUARE_SIZE, piece.locY * SQUARE_SIZE + Y_OFFSET))
+
 
 def draw():
     draw_board()
-    for piece in white_player.pieces:
-        piece_sprite = pygame.image.load(piece.spriteLoc)
-        piece_image = pygame.transform.scale(piece_sprite, (CELL_SIZE * .9, CELL_SIZE * .9))
-        window.blit(piece_image, (piece.locX * CELL_SIZE, piece.locY * CELL_SIZE + Y_OFFSET))
-    for piece in black_player.pieces:
-        piece_sprite = pygame.image.load(piece.spriteLoc)
-        piece_image = pygame.transform.scale(piece_sprite, (CELL_SIZE * .9, CELL_SIZE * .9))
-        window.blit(piece_image, (piece.locX * CELL_SIZE, piece.locY * CELL_SIZE + Y_OFFSET))
+    draw_player_pieces(white_player)
+    draw_player_pieces(black_player)
     pygame.display.update()
 
 
