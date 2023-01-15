@@ -3,8 +3,8 @@ from piece_color import PieceColor
 
 
 class Queen(Piece):
-    def __init__(self, locX, locY, color):
-        super().__init__(locX, locY, color)
+    def __init__(self, loc_x, locY, color):
+        super().__init__(loc_x, locY, color)
         if color == PieceColor.BLACK:
             self.spriteLoc = "Assets/bQ.svg"
         elif color == PieceColor.WHITE:

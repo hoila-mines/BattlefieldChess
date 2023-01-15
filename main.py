@@ -29,8 +29,9 @@ HIGHLIGHT_COLOR = (255,255, 153)
 # initiate players and board
 white_player = Player()
 black_player = Player()
+player_turn = PieceColor.WHITE
 board = [[None for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
-highlighted_piece = None
+# highlighted_piece = None
 sprite_cache = {}
 
 board_config = [
@@ -121,15 +122,12 @@ def draw_player_pieces(player): #draw a player's pieces
             sprite_scalar = SQUARE_SIZE / max(piece_sprite.get_width(), piece_sprite.get_height()) #get scalar to maintain aspect ratio
             piece_image = pygame.transform.smoothscale(piece_sprite, (piece_sprite.get_width() * sprite_scalar, piece_sprite.get_height() * sprite_scalar))
             sprite_cache[piece.spriteLoc] = piece_image # add created sprite to cache
-        window.blit(piece_image, (piece.locX * SQUARE_SIZE, piece.locY * SQUARE_SIZE + Y_OFFSET))
-
-
+        window.blit(piece_image, (piece.loc_x * SQUARE_SIZE, piece.loc_y * SQUARE_SIZE + Y_OFFSET))
+        #TODO: check squares after each move
         piece.check_squares(board)
-
-
         if piece.is_highlighted: # designate available squares
             for square in piece.available_squares:
-                pygame.draw.circle(window, (0, 0, 0), (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
+                pygame.draw.circle(window, HIGHLIGHT_COLOR, (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
 
 def draw(): #combines all draw functions
     window.fill((128, 128, 128))
@@ -144,17 +142,40 @@ def clear_highlights():
     for piece in black_player.pieces:
         piece.remove_highlight()
 
-def handle_click(click_position): # ran every time there is a click
+def get_highlighted_piece():
+    for piece in white_player.pieces:
+        if piece.is_highlighted:
+            return piece
+    for piece in black_player.pieces:
+        if piece.is_highlighted:
+            return piece
+    return None
+
+def switch_player_turn():
+    global player_turn
+    if player_turn == PieceColor.WHITE:
+        player_turn = PieceColor.BLACK
+    else:
+        player_turn = PieceColor.WHITE
+
+def handle_click(click_position): # is run every time a click event is triggered
     square_x = math.floor(click_position[0] / SQUARE_SIZE) # convert event coordinates to board squares
     square_y = math.floor((click_position[1] - Y_OFFSET) / SQUARE_SIZE)
     if Y_OFFSET < click_position[1] < (Y_OFFSET + BOARD_HEIGHT * SQUARE_SIZE): # if the click was on the board
         clicked_piece = board[square_y][square_x]  # get the piece at the clicked location
-        if clicked_piece is None:  # if the player clicked an empty square
+        if clicked_piece is not None and clicked_piece.color is player_turn: # clicked on playing color's piece
             clear_highlights()
+            clicked_piece.add_highlight()
         else:
-            if not clicked_piece.is_highlighted:
-                clear_highlights()
-                clicked_piece.add_highlight()  # swap highlight to new clicked piece
+            highlighted_piece = get_highlighted_piece()
+            if highlighted_piece is not None: # a piece has been highlighted
+                for square in highlighted_piece.available_squares:
+                    if square == [square_x, square_y]: # clicked square is a target
+                        board[highlighted_piece.loc_y][highlighted_piece.loc_x] = None
+                        highlighted_piece.set_loc(square_x, square_y)
+                        board[square_y][square_x] = highlighted_piece
+                        # switch_player_turn()
+            clear_highlights()
     else:
         clear_highlights()
     draw()
