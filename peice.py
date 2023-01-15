@@ -8,6 +8,7 @@ class Piece:
         self.locX = locX
         self.locY = locY
         self.color = color
+        self.is_highlighted = False
     def set_loc(self, locX, locY):
         self.locX = locX
         self.locY = locY
