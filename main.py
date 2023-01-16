@@ -25,7 +25,7 @@ Y_OFFSET = (WINDOW_HEIGHT - SQUARE_SIZE * BOARD_HEIGHT) / 2
 #define colors
 WHITE_COLOR = (255, 255, 255)
 RED_COLOR = (255, 128, 128)
-HIGHLIGHT_COLOR = (255,255, 153)
+HIGHLIGHT_COLOR = (51,153, 255)
 # initiate players and board
 white_player = Player()
 black_player = Player()
@@ -123,11 +123,18 @@ def draw_player_pieces(player): #draw a player's pieces
             piece_image = pygame.transform.smoothscale(piece_sprite, (piece_sprite.get_width() * sprite_scalar, piece_sprite.get_height() * sprite_scalar))
             sprite_cache[piece.spriteLoc] = piece_image # add created sprite to cache
         window.blit(piece_image, (piece.loc_x * SQUARE_SIZE, piece.loc_y * SQUARE_SIZE + Y_OFFSET))
-        #TODO: check squares after each move
+
+    highlighted_piece = get_highlighted_piece() # draw target squares for highlighted piece
+    if highlighted_piece is not None:
+        for square in highlighted_piece.available_squares:
+            pygame.draw.circle(window, HIGHLIGHT_COLOR, (square[0] * SQUARE_SIZE + SQUARE_SIZE / 2, square[1] * SQUARE_SIZE + SQUARE_SIZE / 2 + Y_OFFSET), SQUARE_SIZE / 6)
+
+
+def calculate_squares_all_pieces():
+    for piece in white_player.pieces:
         piece.check_squares(board)
-        if piece.is_highlighted: # show available squares
-            for square in piece.available_squares:
-                pygame.draw.circle(window, (153, 153, 0), (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
+    for piece in black_player.pieces:
+        piece.check_squares(board)
 
 def draw(): #combines all draw functions
     window.fill((128, 128, 128))
@@ -174,6 +181,7 @@ def handle_click(click_position): # is run every time a click event is triggered
                         board[highlighted_piece.loc_y][highlighted_piece.loc_x] = None
                         highlighted_piece.set_loc(square_x, square_y)
                         board[square_y][square_x] = highlighted_piece
+                        calculate_squares_all_pieces()
                         # switch_player_turn()
             clear_highlights()
     else:
@@ -185,6 +193,7 @@ def main():
     FPS_clock = pygame.time.Clock()
     is_running = True
     read_config()
+    calculate_squares_all_pieces()
     draw()
     while is_running:
         FPS_clock.tick(FPS_LIMIT)

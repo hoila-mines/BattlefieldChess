@@ -1,3 +1,4 @@
+from direction import Direction
 from piece import Piece
 from piece_color import PieceColor
 
@@ -9,5 +10,8 @@ class Queen(Piece):
             self.spriteLoc = "Assets/bQ.svg"
         elif color == PieceColor.WHITE:
             self.spriteLoc = "Assets/wQ.svg"
-    def calculate_squares(self):
-        pass
+
+    def check_squares(self, board):
+        super().check_squares(board)
+        for direction in Direction:
+            super().look_direction(board, direction, True)

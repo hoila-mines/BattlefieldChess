@@ -1,3 +1,4 @@
+from direction import Direction
 from piece import Piece
 from piece_color import PieceColor
 
@@ -9,5 +10,9 @@ class Rook(Piece):
             self.spriteLoc = "Assets/bR.svg"
         elif color == PieceColor.WHITE:
             self.spriteLoc = "Assets/wR.svg"
-    def calculate_squares(self):
-        pass
+
+    def check_squares(self, board):
+        super().check_squares(board)
+        directions = [Direction.RIGHT, Direction.UP, Direction.LEFT, Direction.DOWN]
+        for direction in directions:
+            super().look_direction(board, direction, True)

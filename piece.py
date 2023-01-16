@@ -34,7 +34,7 @@ class Piece:
         keep_iterating = True
         new_x, new_y = self.loc_x, self.loc_y
         while(keep_iterating):
-            keep_iterating = direction_extends
+            keep_iterating = direction_extends # if direction does not extend, loop will be run only once
             new_x, new_y = self.increment_direction([new_x, new_y], direction)
             if 0 <= new_x < len(board[0]) and 0 <= new_y < len(board):  # square is in bounds
                 new_square_piece = board[new_y][new_x]
