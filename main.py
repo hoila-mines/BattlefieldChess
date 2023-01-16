@@ -125,9 +125,9 @@ def draw_player_pieces(player): #draw a player's pieces
         window.blit(piece_image, (piece.loc_x * SQUARE_SIZE, piece.loc_y * SQUARE_SIZE + Y_OFFSET))
         #TODO: check squares after each move
         piece.check_squares(board)
-        if piece.is_highlighted: # designate available squares
+        if piece.is_highlighted: # show available squares
             for square in piece.available_squares:
-                pygame.draw.circle(window, HIGHLIGHT_COLOR, (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
+                pygame.draw.circle(window, (153, 153, 0), (square[0] * SQUARE_SIZE + SQUARE_SIZE/2, square[1] * SQUARE_SIZE + SQUARE_SIZE/2 + Y_OFFSET), 10)
 
 def draw(): #combines all draw functions
     window.fill((128, 128, 128))

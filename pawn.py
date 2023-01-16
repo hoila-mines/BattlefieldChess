@@ -14,6 +14,6 @@ class Pawn(Piece):
 
     def check_squares(self, board):
         super().check_squares(board)
-        super().look_direction(board, Direction.UP, MoveType.OCCUPY)
-        super().look_direction(board, Direction.RIGHT_UP, MoveType.CAPTURE)
-        super().look_direction(board, Direction.LEFT_UP, MoveType.CAPTURE)
+        super().look_direction(board, Direction.UP, False, MoveType.OCCUPY)
+        super().look_direction(board, Direction.RIGHT_UP, False, MoveType.CAPTURE)
+        super().look_direction(board, Direction.LEFT_UP, False, MoveType.CAPTURE)

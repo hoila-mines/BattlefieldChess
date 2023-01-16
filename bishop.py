@@ -1,3 +1,4 @@
+from direction import Direction
 from piece import Piece
 from piece_color import PieceColor
 
@@ -10,4 +11,7 @@ class Bishop(Piece):
         elif color == PieceColor.WHITE:
             self.spriteLoc = "Assets/wB.svg"
     def check_squares(self, board):
-        pass
+        super().check_squares(board)
+        directions = [Direction.RIGHT_UP, Direction.LEFT_UP, Direction.LEFT_DOWN, Direction.RIGHT_DOWN]
+        for direction in directions:
+            super().look_direction(board, direction, True)
