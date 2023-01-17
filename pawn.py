@@ -5,8 +5,9 @@ from piece_color import PieceColor
 
 
 class Pawn(Piece):
-    def __init__(self, loc_x, locY, color):
-        super().__init__(loc_x, locY, color)
+    def __init__(self, loc_x, loc_y, color):
+        super().__init__(loc_x, loc_y, color)
+        self.move_count = 0
         if color == PieceColor.BLACK:
             self.spriteLoc = "Assets/bP.svg"
         elif color == PieceColor.WHITE:
@@ -17,3 +18,5 @@ class Pawn(Piece):
         super().look_direction(board, Direction.UP, False, MoveType.OCCUPY)
         super().look_direction(board, Direction.RIGHT_UP, False, MoveType.CAPTURE)
         super().look_direction(board, Direction.LEFT_UP, False, MoveType.CAPTURE)
+        if self.move_count < 2:
+            super().look_direction(board, [element * 2 for element in Direction.UP.value], False, MoveType.OCCUPY)

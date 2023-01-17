@@ -178,11 +178,13 @@ def handle_click(click_position): # is run every time a click event is triggered
             if highlighted_piece is not None: # a piece has been highlighted
                 for square in highlighted_piece.available_squares:
                     if square == [square_x, square_y]: # clicked square is a target
+                        if isinstance(highlighted_piece, Pawn):
+                            highlighted_piece.move_count += 1
                         board[highlighted_piece.loc_y][highlighted_piece.loc_x] = None
                         highlighted_piece.set_loc(square_x, square_y)
                         board[square_y][square_x] = highlighted_piece
                         calculate_squares_all_pieces()
-                        # switch_player_turn()
+                        switch_player_turn()
             clear_highlights()
     else:
         clear_highlights()
