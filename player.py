@@ -1,7 +1,8 @@
 class Player:
-    def __init__(self):
+    def __init__(self, color):
         self.pieces = []
         self.dead_pieces = []
+        self.color = color
     def add_piece(self, piece):
         self.pieces.append(piece)
 

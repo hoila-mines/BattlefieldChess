@@ -28,8 +28,11 @@ WHITE_COLOR = (255, 255, 255)
 RED_COLOR = (255, 128, 128)
 HIGHLIGHT_COLOR = (51, 153, 255)
 # initiate players and board
-white_player = Player()
-black_player = Player()
+white_player = Player(PieceColor.WHITE)
+black_player = Player(PieceColor.BLACK)
+players = []
+players.append(white_player)
+players.append(black_player)
 player_turn = PieceColor.WHITE
 board = [[None for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
 # highlighted_piece = None
@@ -115,19 +118,20 @@ def draw_board():  # draw the squares in alternating color
 
 
 def draw_captured_pieces():
-    for i in range(len(white_player.dead_pieces)):
-        draw_x, draw_y = (i * SQUARE_SIZE / 2) + SQUARE_SIZE * .25, Y_OFFSET - SQUARE_SIZE * 1.25
-        if  i >= BOARD_WIDTH: # draw pieces on the second row if there are too many
-            draw_y -= SQUARE_SIZE/2
-            draw_x -= (BOARD_WIDTH * SQUARE_SIZE / 2)
-        window.blit(get_image(white_player.dead_pieces[i]), (draw_x, draw_y))
-    for i in range(len(black_player.dead_pieces)):
-        draw_x, draw_y = (i * SQUARE_SIZE / 2) + SQUARE_SIZE * .25, Y_OFFSET + (BOARD_HEIGHT * SQUARE_SIZE) + SQUARE_SIZE * 0.25
-        if  i >= BOARD_WIDTH: # draw pieces on the second row if there are too many
-            draw_y += SQUARE_SIZE/2
-            draw_x -= (BOARD_WIDTH * SQUARE_SIZE / 2)
-        window.blit(get_image(black_player.dead_pieces[i]), (draw_x, draw_y))
+    for player in players:
+        for i in range(len(player.dead_pieces)):
+            draw_x, draw_y = (i * SQUARE_SIZE / 2) + SQUARE_SIZE * .25, Y_OFFSET - SQUARE_SIZE * 1.25
+            if player.color == PieceColor.BLACK: # black pieces start lower down
+                draw_y += (BOARD_HEIGHT * SQUARE_SIZE) + SQUARE_SIZE * 2
+            if i >= BOARD_WIDTH:  # draw pieces on the second row if there are too many
+                draw_y -= SQUARE_SIZE * 3/4
+                draw_x -= (BOARD_WIDTH * SQUARE_SIZE / 2)
+            window.blit(get_image(player.dead_pieces[i]), (draw_x, draw_y))
 
+
+
+# def draw_stat_panels():
+#     for player in players
 
 def draw_player_pieces(player):  # draw a player's pieces
     for piece in player.pieces:
@@ -138,7 +142,7 @@ def draw_player_pieces(player):  # draw a player's pieces
     if highlighted_piece is not None:
         for square in highlighted_piece.available_squares:
             pygame.draw.circle(window, HIGHLIGHT_COLOR, (
-            square[0] * SQUARE_SIZE + SQUARE_SIZE / 2, square[1] * SQUARE_SIZE + SQUARE_SIZE / 2 + Y_OFFSET),
+                square[0] * SQUARE_SIZE + SQUARE_SIZE / 2, square[1] * SQUARE_SIZE + SQUARE_SIZE / 2 + Y_OFFSET),
                                SQUARE_SIZE / 6)
 
 
@@ -156,10 +160,9 @@ def get_image(piece):
 
 
 def calculate_squares_all_pieces():
-    for piece in white_player.pieces:
-        piece.check_squares(board)
-    for piece in black_player.pieces:
-        piece.check_squares(board)
+    for player in players:
+        for piece in player.pieces:
+            piece.check_squares(board)
 
 
 def draw():  # combines all draw functions
@@ -172,19 +175,16 @@ def draw():  # combines all draw functions
 
 
 def clear_highlights():
-    for piece in white_player.pieces:
-        piece.remove_highlight()
-    for piece in black_player.pieces:
-        piece.remove_highlight()
+    for player in players:
+        for piece in player.pieces:
+            piece.remove_highlight()
 
 
 def get_highlighted_piece():
-    for piece in white_player.pieces:
-        if piece.is_highlighted:
-            return piece
-    for piece in black_player.pieces:
-        if piece.is_highlighted:
-            return piece
+    for player in players:
+        for piece in player.pieces:
+            if piece.is_highlighted:
+                return piece
     return None
 
 
