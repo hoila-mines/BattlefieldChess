@@ -25,18 +25,19 @@ SQUARE_SIZE = min(WINDOW_WIDTH / BOARD_WIDTH, WINDOW_HEIGHT / BOARD_HEIGHT)
 Y_OFFSET = (WINDOW_HEIGHT - SQUARE_SIZE * BOARD_HEIGHT) / 2
 # define colors
 WHITE_COLOR = (255, 255, 255)
+BLACK_COLOR = (0, 0, 0)
 RED_COLOR = (255, 128, 128)
 HIGHLIGHT_COLOR = (51, 153, 255)
 # initiate players and board
 white_player = Player(PieceColor.WHITE)
 black_player = Player(PieceColor.BLACK)
-players = []
-players.append(white_player)
-players.append(black_player)
+players = [white_player, black_player]
 player_turn = PieceColor.WHITE
 board = [[None for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
 # highlighted_piece = None
 image_cache = {}
+pygame.font.init()
+font = pygame.font.Font(None, 40)
 
 board_config = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bN", "bB", "bQ", "bK",
@@ -91,8 +92,10 @@ def read_config():
                 # add piece to correct player
                 if piece_color == PieceColor.WHITE:
                     white_player.add_piece(newPiece)
+                    # white_player.dead_pieces.append(newPiece)
                 elif piece_color == PieceColor.BLACK:
                     black_player.add_piece(newPiece)
+                    # black_player.dead_pieces.append(newPiece)
                 board[i][j] = newPiece
 
 
@@ -121,17 +124,14 @@ def draw_captured_pieces():
     for player in players:
         for i in range(len(player.dead_pieces)):
             draw_x, draw_y = (i * SQUARE_SIZE / 2) + SQUARE_SIZE * .25, Y_OFFSET - SQUARE_SIZE * 1.25
-            if player.color == PieceColor.BLACK: # black pieces start lower down
+            if player.color == PieceColor.BLACK:  # black pieces start lower down
                 draw_y += (BOARD_HEIGHT * SQUARE_SIZE) + SQUARE_SIZE * 2
             if i >= BOARD_WIDTH:  # draw pieces on the second row if there are too many
-                draw_y -= SQUARE_SIZE * 3/4
+                draw_y -= SQUARE_SIZE * 3 / 4
                 draw_x -= (BOARD_WIDTH * SQUARE_SIZE / 2)
             window.blit(get_image(player.dead_pieces[i]), (draw_x, draw_y))
 
 
-
-# def draw_stat_panels():
-#     for player in players
 
 def draw_player_pieces(player):  # draw a player's pieces
     for piece in player.pieces:
@@ -165,12 +165,27 @@ def calculate_squares_all_pieces():
             piece.check_squares(board)
 
 
+def draw_stat_panels():
+    for player in players:
+        draw_x, draw_y = WINDOW_WIDTH - 500, Y_OFFSET - 100
+        text_color = BLACK_COLOR
+        if player.color == PieceColor.BLACK: # draw lower down and switch text color
+            draw_y += (BOARD_HEIGHT * SQUARE_SIZE) + 110
+            text_color = WHITE_COLOR
+        point_total = 0
+        for piece in player.dead_pieces: # add up point values
+            point_total += piece.value
+        text = font.render(f'Points: {point_total}', True, text_color)
+        window.blit(text, (draw_x, draw_y))
+
+
 def draw():  # combines all draw functions
     window.fill((128, 128, 128))
     draw_board()
     draw_player_pieces(white_player)
     draw_player_pieces(black_player)
     draw_captured_pieces()
+    draw_stat_panels()
     pygame.display.update()
 
 

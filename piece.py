@@ -14,6 +14,7 @@ class Piece:
         self.is_highlighted = False
         self.attacking_squares = []
         self.available_squares = []
+        self.value = 0
 
     def set_loc(self, loc_x, loc_y):
         self.loc_x = loc_x

@@ -6,6 +6,7 @@ from piece_color import PieceColor
 class Knight(Piece):
     def __init__(self, loc_x, loc_y, color):
         super().__init__(loc_x, loc_y, color)
+        self.value = 3
         if color == PieceColor.BLACK:
             self.spriteLoc = "Assets/bN.svg"
         elif color == PieceColor.WHITE:

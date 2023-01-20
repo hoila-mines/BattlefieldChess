@@ -7,6 +7,7 @@ from piece_color import PieceColor
 class Pawn(Piece):
     def __init__(self, loc_x, loc_y, color):
         super().__init__(loc_x, loc_y, color)
+        self.value = 1
         self.move_count = 0
         if color == PieceColor.BLACK:
             self.spriteLoc = "Assets/bP.svg"
